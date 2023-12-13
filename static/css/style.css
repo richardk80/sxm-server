@@ -1,9 +1,3 @@
-/*
-  Based on TailwindCSS recommendations,
-  consider using classes instead of the `@apply` directive
-  @see https://tailwindcss.com/docs/reusing-styles#avoiding-premature-abstraction
-*/
-
 @media only screen and (max-device-width: 1024px) {
   div.box,
     div.info {
