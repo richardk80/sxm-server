@@ -1,0 +1,105 @@
+/*
+  Based on TailwindCSS recommendations,
+  consider using classes instead of the `@apply` directive
+  @see https://tailwindcss.com/docs/reusing-styles#avoiding-premature-abstraction
+*/
+
+@media only screen and (max-device-width: 1024px) {
+  div.box,
+    div.info {
+    width: 100%
+  }
+}
+
+@media only screen and (min-width: 1025px) {
+  div.box {
+    width: 300px
+  }
+}
+
+div.box {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 200px;
+  margin-bottom: 200px;
+  display: block
+}
+
+img.status {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  display: block;
+  height: 9rem;
+  width: 9rem
+}
+
+input[type="text"] {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  display: block;
+  height: 25px;
+  width: 150px;
+  border-radius: 9999px;
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgb(0 0 0 / var(--tw-border-opacity));
+  text-align: center
+}
+
+button {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  display: block;
+  height: 40px;
+  width: 150px;
+  border-radius: 9999px;
+  border-color: transparent;
+  --tw-bg-opacity: 1;
+  background-color: rgb(34 197 94 / var(--tw-bg-opacity));
+  font-weight: 700;
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity))
+}
+
+button:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(22 163 74 / var(--tw-bg-opacity))
+}
+
+button:focus {
+  --tw-bg-opacity: 1;
+  background-color: rgb(22 163 74 / var(--tw-bg-opacity))
+}
+
+div#info.info.show {
+  margin-top: 0.75rem
+}
+
+span.response-key {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  display: block;
+  width: 75%;
+  font-weight: 700
+}
+
+span.response-value {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  display: block;
+  width: 75%
+}
+
+.hide {
+  display: none
+}

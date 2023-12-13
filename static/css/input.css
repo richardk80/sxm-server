@@ -1,0 +1,40 @@
+/*
+  Based on TailwindCSS recommendations,
+  consider using classes instead of the `@apply` directive
+  @see https://tailwindcss.com/docs/reusing-styles#avoiding-premature-abstraction
+*/
+@media only screen and (max-device-width: 1024px) {
+    div.box,
+    div.info {
+      @apply w-full;
+    }
+  }
+  @media only screen and (min-width: 1025px) {
+    div.box {
+      @apply w-[300px];
+    }
+  }
+  div.box {
+    @apply block mx-auto my-[200px];
+  }
+  img.status {
+    @apply block w-36 h-36 mx-auto my-[15px];
+  }
+  input[type="text"] {
+    @apply block w-[150px] h-[25px] text-center mx-auto my-[15px] rounded-full border border-black;
+  }
+  button {
+    @apply block w-[150px] h-[40px] mx-auto my-[15px] rounded-full bg-green-500 hover:bg-green-600 focus:bg-green-600 border-transparent text-white font-bold;
+  }
+  div#info.info.show {
+    @apply mt-3;
+  }
+  span.response-key {
+    @apply font-bold block w-9/12 mt-[10px] mb-[5px] mx-auto;
+  }
+  span.response-value {
+    @apply block w-9/12 mt-[10px] mb-[5px] mx-auto;
+  }
+  .hide {
+    @apply hidden;
+  }
