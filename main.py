@@ -1,13 +1,11 @@
 import sys
 import requests
-import uuid
+import uuid as uuid_module
 from flask import Flask, request, render_template
 
 
 api = Flask(__name__)
-
 SESSION = requests.session()
-
 RESPONSES = {
     'activated': {
         'crm': {'resultCode': 'SUCCESS', 'opstatus': 0, 'httpStatusCode': 200},
@@ -27,13 +25,14 @@ def appconfig():
     response = SESSION.post(
         url="https://mcare.siriusxm.ca/authService/100000002/appconfig",
         headers={
+            "X-Kony-Integrity": "GWSUSEVMJK;FEC9AA232EC59BE8A39F0FAE1B71300216E906B85F40CA2B1C5C7A59F85B17A4",
             "X-HTTP-Method-Override": "GET",
             "Accept": "*/*",
             "X-Kony-App-Secret": "e3048b73f2f7a6c069f7d8abf5864115",
-            "Accept-Language": "en-US,en;q=0.9",
-            "Accept-Encoding": "gzip, deflate",
+            "Accept-Language": "en-us",
+            "Accept-Encoding": "br, gzip, deflate",
             "X-Kony-App-Key": "85ee60a3c8f011baaeba01ff3a5ae2c9",
-            "User-Agent": "SXM Dealer/3 CFNetwork/1474 Darwin/23.0.0",
+            "User-Agent": "SXM Dealer/2.7.0 CFNetwork/978.0.7 Darwin/18.7.0",
         },
     )
 
@@ -47,11 +46,11 @@ def login():
             "X-Kony-Platform-Type": "ios",
             "Accept": "application/json",
             "X-Kony-App-Secret": "e3048b73f2f7a6c069f7d8abf5864115",
-            "Accept-Language": "en-US,en;q=0.9",
+            "Accept-Language": "en-us",
             "X-Kony-SDK-Type": "js",
-            "Accept-Encoding": "gzip, deflate",
+            "Accept-Encoding": "br, gzip, deflate",
             "Content-Type": "application/x-www-form-urlencoded",
-            "User-Agent": "SXM Dealer/3 CFNetwork/1474 Darwin/23.0.0",
+            "User-Agent": "SXM Dealer/2.7.0 CFNetwork/978.0.7 Darwin/18.7.0",
             "X-Kony-SDK-Version": "8.4.134",
             "X-Kony-App-Key": "85ee60a3c8f011baaeba01ff3a5ae2c9",
         },
@@ -60,32 +59,25 @@ def login():
     return response.json().get('claims_token').get('value')
 
 
-def version_control(token: str, uuid4: str):
+def version_control(token: str, uuid: str):
     response = SESSION.post(
         url="https://mcare.siriusxm.ca/services/DealerAppService7/VersionControl",
         headers={
             "Accept": "*/*",
-            "X-Kony-ReportingParams": '{"os":"16.1.1","dm":"unknown","did":uuid4,'
-                                      '"ua":"iPhone","aid":"DealerApp","aname":"SXM Dealer","chnl":"mobile",'
-                                      '"plat":"ios","aver":"2.4.0","atype":"native","stype":"b2c","kuid":"",'
-                                      '"mfaid":"3de259b8-e39b-4f60-b2ba-ae3d4a2655bf",'
-                                      '"mfbaseid":"5fa7a77c-aa7e-423f-b9bd-4fe67e91bb71","mfaname":"DealerApp",'
-                                      '"sdkversion":"8.4.134","sdktype":"js","fid":"frmHome","sessiontype":"I",'
-                                      '"rsid":"1668318090440-ac27-f025-7685","svcid":"VersionControl"}',
             "X-Kony-API-Version": "1.0",
-            "X-Kony-DeviceId": uuid4,
-            "Accept-Language": "en-US,en;q=0.9",
-            "Accept-Encoding": "gzip, deflate",
+            "X-Kony-DeviceId": uuid,
+            "Accept-Language": "en-us",
+            "Accept-Encoding": "br, gzip, deflate",
             "Content-Type": "application/x-www-form-urlencoded",
-            "User-Agent": "SXM Dealer/3 CFNetwork/1399 Darwin/22.1.0",
+            "User-Agent": "SXM Dealer/2.7.0 CFNetwork/978.0.7 Darwin/18.7.0",
             "X-Kony-Authorization": token,
         },
         data={
             "deviceCategory": "iPhone",
-            "appver": "2.4.0",
+            "appver": "2.7.0",
             "deviceLocale": "en_US",
-            "deviceModel": "unknown",
-            "deviceVersion": "16.1.1",
+            "deviceModel": "iPhone 6 Plus",
+            "deviceVersion": "12.5.7",
             "deviceType": "",
         },
     )
@@ -93,75 +85,62 @@ def version_control(token: str, uuid4: str):
     return response.json()
 
 
-def get_properties(token: str, uuid4: str):
+def get_properties(token: str, uuid: str):
     response = SESSION.post(
         url="https://mcare.siriusxm.ca/services/DealerAppService7/getProperties",
         headers={
             "Accept": "*/*",
             "X-Kony-API-Version": "1.0",
-            "X-Kony-DeviceId": uuid4,
-            "Accept-Language": "en-US,en;q=0.9",
-            "Accept-Encoding": "gzip, deflate",
+            "X-Kony-DeviceId": uuid,
+            "Accept-Language": "en-us",
+            "Accept-Encoding": "br, gzip, deflate",
             "Content-Type": "application/x-www-form-urlencoded",
-            "User-Agent": "SXM Dealer/3 CFNetwork/1474 Darwin/23.0.0",
+            "User-Agent": "SXM Dealer/2.7.0 CFNetwork/978.0.7 Darwin/18.7.0",
             "X-Kony-Authorization": token,
         },
-        data={},
     )
 
     return response.json()
 
 
-def update_device_sat_refresh_with_priority(device_id: str, token: str, uuid4: str):
+def update_device_sat_refresh_with_priority(device_id: str, token: str, uuid: str) -> int:
     response = SESSION.post(
         url="https://mcare.siriusxm.ca/services/USUpdateDeviceSATRefresh/updateDeviceSATRefreshWithPriority",
         headers={
             "Accept": "*/*",
             "X-Kony-API-Version": "1.0",
-            "X-Kony-DeviceId": uuid4,
-            "Accept-Language": "en-US,en;q=0.9",
-            "Accept-Encoding": "gzip, deflate",
+            "X-Kony-DeviceId": uuid,
+            "Accept-Language": "en-us",
+            "Accept-Encoding": "br, gzip, deflate",
             "Content-Type": "application/x-www-form-urlencoded",
-            "User-Agent": "SXM Dealer/3 CFNetwork/1474 Darwin/23.0.0",
+            "User-Agent": "SXM Dealer/2.7.0 CFNetwork/978.0.7 Darwin/18.7.0",
             "X-Kony-Authorization": token,
         },
         data={
             "deviceId": device_id,
-            "appVersion": "2.4.0",
-            "lng": "-86.210274696",
-            "provisionPackageName": "",
-            "vin": "",
-            "deviceID": uuid4,
-            "flow_name": "Enter Radio ID",
+            "appVersion": "2.7.0",
+            "lng": "-86.210313195",
+            "deviceID": uuid,
             "provisionPriority": "2",
             "provisionType": "activate",
-            "phone": "",
-            "note": "1",
-            "AuthName": "",
-            "AuthPwd": "",
-            "lat": "32.374343677",
-            "provisionDate": "",
-            "dmCode": "",
-            "vehicle_active_flag": "",
-            "base64": "X06FDae2079Ge5H9PYW5sg==",
+            "lat": "32.37436705",
         },
     )
 
-    return response.json()
+    return response.json().get('seqValue', -1)
 
 
-def get_crm_account_plan_information(device_id: str, token: str, seq_value, uuid4: str):
+def get_crm_account_plan_information(device_id: str, token: str, seq_value: int, uuid: str):
     response = SESSION.post(
-        url=
-        "https://mcare.siriusxm.ca/services/DemoConsumptionRules/GetCRMAccountPlanInformation",
+        url="https://mcare.siriusxm.ca/services/DemoConsumptionRules/GetCRMAccountPlanInformation",
         headers={
             "Accept": "*/*",
             "X-Kony-API-Version": "1.0",
-            "X-Kony-DeviceId": uuid4,
-            "Accept-Language": "en-US,en;q=0.9",
-            "Accept-Encoding": "gzip, deflate",
+            "X-Kony-DeviceId": uuid,
+            "Accept-Language": "en-us",
+            "Accept-Encoding": "br, gzip, deflate",
             "Content-Type": "application/x-www-form-urlencoded",
-            "User-Agent": "SXM Dealer/3 CFNetwork/1474 Darwin/23.0.0",
+            "User-Agent": "SXM Dealer/2.7.0 CFNetwork/978.0.7 Darwin/18.7.0",
             "X-Kony-Authorization": token,
         },
         data={
@@ -169,90 +148,110 @@ def get_crm_account_plan_information(device_id: str, token: str, seq_value, uuid
             "deviceId": device_id,
         },
     )
-    return response.json()
-
-
-def db_update_for_google():
-    response = SESSION.post(
-        url="https://mcare.siriusxm.ca/services/DBSuccessUpdate/DBUpdateForGoogle"
-    )
 
     return response.json()
 
 
-def block_list_device(token: str, uuid4: str):
+def db_update_for_google(device_id: str, token: str, seq_value: int, uuid: str):
     response = SESSION.post(
-        url=
-        "https://mcare.siriusxm.ca/services/USBlockListDevice/BlockListDevice",
+        url="https://mcare.siriusxm.ca/services/DBSuccessUpdate/DBUpdateForGoogle",
         headers={
             "Accept": "*/*",
             "X-Kony-API-Version": "1.0",
-            "X-Kony-DeviceId": uuid4,
-            "Accept-Language": "en-US,en;q=0.9",
-            "Accept-Encoding": "gzip, deflate",
+            "X-Kony-DeviceId": uuid,
+            "Accept-Language": "en-us",
+            "Accept-Encoding": "br, gzip, deflate",
             "Content-Type": "application/x-www-form-urlencoded",
-            "User-Agent": "SXM Dealer/3 CFNetwork/1474 Darwin/23.0.0",
+            "User-Agent": "SXM Dealer/2.7.0 CFNetwork/978.0.7 Darwin/18.7.0",
             "X-Kony-Authorization": token,
         },
         data={
-            "deviceId": uuid4,
+            "OM_ELIGIBILITY_STATUS": "Eligible",
+            "appVersion": "2.7.0",
+            "flag": "failure",
+            "Radio_ID": device_id,
+            "deviceID": uuid,
+            "G_PLACES_REQUEST": "",
+            "OS_Version": "iPhone 12.5.7",
+            "G_PLACES_RESPONSE": "",
+            "Confirmation_Status": "SUCCESS",
+            "seqVal": seq_value,
         },
     )
+
     return response.json()
 
 
-def create_account(device_id: str, token: str, seq_value, uuid4: str):
+def block_list_device(token: str, uuid: str):
     response = SESSION.post(
-        url=
-        "https://mcare.siriusxm.ca/services/DealerAppService3/CreateAccount",
+        url="https://mcare.siriusxm.ca/services/USBlockListDevice/BlockListDevice",
         headers={
-            "Connection": "close",
             "Accept": "*/*",
             "X-Kony-API-Version": "1.0",
-            "X-Kony-DeviceId": uuid4,
-            "Accept-Language": "en-US,en;q=0.9",
-            "Accept-Encoding": "gzip, deflate",
+            "X-Kony-DeviceId": uuid,
+            "Accept-Language": "en-us",
+            "Accept-Encoding": "br, gzip, deflate",
             "Content-Type": "application/x-www-form-urlencoded",
-            "User-Agent": "SXM Dealer/3 CFNetwork/1474 Darwin/23.0.0",
+            "User-Agent": "SXM Dealer/2.7.0 CFNetwork/978.0.7 Darwin/18.7.0",
+            "X-Kony-Authorization": token,
+        },
+        data={
+            "deviceId": uuid,
+        },
+    )
+
+    return response.json()
+
+
+def create_account(device_id: str, token: str, seq_value: int, uuid: str):
+
+    response = SESSION.post(
+        url="https://mcare.siriusxm.ca/services/DealerAppService3/CreateAccount",
+        headers={
+            "Accept": "*/*",
+            "X-Kony-API-Version": "1.0",
+            "X-Kony-DeviceId": uuid,
+            "Accept-Language": "en-us",
+            "Accept-Encoding": "br, gzip, deflate",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "SXM Dealer/2.7.0 CFNetwork/978.0.7 Darwin/18.7.0",
             "X-Kony-Authorization": token,
         },
         data={
             "seqVal": seq_value,
             "deviceId": device_id,
             "oracleCXFailed": "1",
-            "appVersion": "2.4.0",
+            "appVersion": "2.7.0",
         },
     )
+
     return response.json()
 
 
-def update_device_sat_refresh_with_priority_cc(device_id: str, token: str,
-                                               uuid4: str):
+def update_device_sat_refresh_with_priority_cc(device_id: str, token: str, uuid: str):
     response = SESSION.post(
-        url=
-        "https://mcare.siriusxm.ca/services/USUpdateDeviceRefreshForCC/updateDeviceSATRefreshWithPriority",
+        url="https://mcare.siriusxm.ca/services/USUpdateDeviceRefreshForCC/updateDeviceSATRefreshWithPriority",
         headers={
             "Accept": "*/*",
             "X-Kony-API-Version": "1.0",
-            "X-Kony-DeviceId": uuid4,
-            "Accept-Language": "en-US,en;q=0.9",
-            "Accept-Encoding": "gzip, deflate",
+            "X-Kony-DeviceId": uuid,
+            "Accept-Language": "en-us",
+            "Accept-Encoding": "br, gzip, deflate",
             "Content-Type": "application/x-www-form-urlencoded",
-            "User-Agent": "SXM Dealer/3 CFNetwork/1474 Darwin/23.0.0",
+            "User-Agent": "SXM Dealer/2.7.0 CFNetwork/978.0.7 Darwin/18.7.0",
             "X-Kony-Authorization": token,
         },
         data={
             "deviceId": device_id,
             "provisionPriority": "2",
-            "appVersion": "2.4.0",
-            "note": "1",
-            "provisionPackageName": "",
-            "dmCode": "",
-            "deviceID": uuid4,
+            "appVersion": "2.7.0",
+            "device_Type": "iPhone iPhone 6 Plus",
+            "deviceID": uuid,
+            "os_Version": "iPhone 12.5.7",
             "provisionType": "activate",
-            "provisionDate": "",
         },
     )
+
     return response.json()
 
 
@@ -260,19 +259,18 @@ def process(device_id: str):
 
     results = {}
 
+    uuid = str(uuid_module.uuid4())
+
     appconfig()
     auth_token = login()
-    uuid4 = str(uuid.uuid4())
-    version_control(auth_token, uuid4)
-    get_properties(auth_token, uuid4)
-    response = update_device_sat_refresh_with_priority(device_id, auth_token, uuid4)
-    seq = int(response.get('seqValue'))
-    results['crm'] = get_crm_account_plan_information(device_id, auth_token, seq, uuid4)
-    db_update_for_google()
-    block_list_device(auth_token, uuid4)
-    results['create'] = create_account(device_id, auth_token, seq, uuid4)
-    results['refresh'] = update_device_sat_refresh_with_priority_cc(device_id, auth_token, uuid4)
-    db_update_for_google()
+    version_control(auth_token, uuid)
+    get_properties(auth_token, uuid)
+    seq = int(update_device_sat_refresh_with_priority(device_id, auth_token, uuid))
+    results['crm'] = get_crm_account_plan_information(device_id, auth_token, seq, uuid)
+    db_update_for_google(device_id, auth_token, seq, uuid)
+    block_list_device(auth_token, uuid)
+    results['create'] = create_account(device_id, auth_token, seq, uuid)
+    results['refresh'] = update_device_sat_refresh_with_priority_cc(device_id, auth_token, uuid)
 
     return results
 
@@ -313,6 +311,6 @@ if __name__ == '__main__':
         radio_id_input = sys.argv[1].upper().strip()
         print(f'Processing for Radio ID "{radio_id_input}"...')
         for key, value in process(radio_id_input).items():
-            print(f"\n{key}:\n{value.strip()}")
+            print(f"\n{key}:\n{value}")
     else:
         api.run()
