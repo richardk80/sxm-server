@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width,height=device-height,initial-scale=1.0">
+    <meta name="description" content="SXM Activator">
+    <title>SXM Activator</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="box">
+        {% if result and result.success %}
+            <img alt="success" class="status" onclick="info()" src="{{ url_for('static', filename='images/success.svg') }}" title="Click for info">
+        {% elif result and not result.success %}
+            <img alt="failure" class="status" onclick="info()" src="{{ url_for('static', filename='images/failure.svg') }}" title="Click for info">
+        {% endif %}
+        <form method="post">
+            <input type="text" name="radio_id"  class="radio_id_entry"
+            placeholder="Enter radio ID"
+            value="{{ request.form['radio_id'] or radio_id }}">
+            <button type="submit" class="button">Activate</button>
+        </form>
+        {% if result and result.responses %}
+        <div class="info hide" id="info">
+            <button id="copy" onclick="copy()">Copy</button>
+            <div id="info-copy">
+            {% for key, value in result.responses.items() %}
+                <span class="response-key">{{ key.upper() }}</span>
+                <span class="response-value">{{ value }}</span>
+            {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <script>
+        function info() {
+            document.getElementById("info").classList.toggle("show");
+            document.getElementById("info").classList.toggle("hide");
+        }
+
+        function copy() {
+            let text = document.getElementById("info-copy").textContent;
+            text = text.replaceAll(' ', '').replaceAll('\n\n', '\n').replace(/^\s*\n/gm, '');
+            navigator.clipboard.writeText(text);
+            document.querySelector('#copy').textContent = 'Copied!';
+        }
+    </script>
+</body>
+</html>
