@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    <div class="header">
+    <h1>SiriusXM Radio Activator</h1>
+  </div>
     <div class="box">
         {% if result and result.success %}
             <img alt="success" class="status" onclick="info()" src="{{ url_for('static', filename='images/success.svg') }}" title="Click for info">
