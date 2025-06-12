@@ -16,10 +16,10 @@
             <img alt="failure" class="status" onclick="info()" src="{{ url_for('static', filename='images/failure.svg') }}" title="Click for info">
         {% endif %}
         <form method="post">
-            <input type="text" name="radio_id"  class="radio_id_entry"
-            placeholder="Enter radio ID"
-            value="{{ request.form['radio_id'] or radio_id }}">
-            <button type="submit" class="button">Activate</button>
+          <input type="text" name="radio_id" class="radio_id_entry"
+          placeholder="Enter radio ID"
+          value="{{ request.form.get('radio_id') or radio_id }}">
+          <button type="submit" class="button">Activate</button>
         </form>
         {% if result and result.responses %}
         <div class="info hide" id="info">
