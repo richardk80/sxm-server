@@ -1,1 +1,0 @@
-# sxm-server
